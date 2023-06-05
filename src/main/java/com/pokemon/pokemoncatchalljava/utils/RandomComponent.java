@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.Random;
 
 @Component
-public class RandomComponent {
+public final class RandomComponent {
     private final int min;
 
     private final int max;

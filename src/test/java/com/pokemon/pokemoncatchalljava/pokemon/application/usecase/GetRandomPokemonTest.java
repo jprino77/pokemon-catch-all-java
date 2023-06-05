@@ -2,6 +2,7 @@ package com.pokemon.pokemoncatchalljava.pokemon.application.usecase;
 
 import com.pokemon.pokemoncatchalljava.pokemon.application.ports.out.PokemonOutputPort;
 import com.pokemon.pokemoncatchalljava.pokemon.domain.model.PokemonDomain;
+import com.pokemon.pokemoncatchalljava.pokemon.domain.model.exception.ApplicationError;
 import com.pokemon.pokemoncatchalljava.utils.RandomComponent;
 import io.vavr.control.Either;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,7 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GetRandomPokemonTest {
 
@@ -30,14 +31,14 @@ class GetRandomPokemonTest {
     @DisplayName("Success getRandom Pokemon")
     void execute() {
         PokemonDomain expectedDomain = new PokemonDomain(4, "Charmander");
-        Either<Exception, PokemonDomain> expectedResult = Either.right(expectedDomain);
+        Either<ApplicationError, PokemonDomain> expectedResult = Either.right(expectedDomain);
 
         Mockito.when(random.randomizeInt()).thenReturn(4);
 
         Mockito.when(pokemonOutputPort.getPokemon(4))
                 .thenReturn(expectedResult);
 
-        Either<Exception, PokemonDomain> result = useCase.execute();
+        Either<ApplicationError, PokemonDomain> result = useCase.execute();
 
         assertEquals(expectedResult, result);
     }

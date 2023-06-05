@@ -1,17 +1,16 @@
 package com.pokemon.pokemoncatchalljava.pokemon.domain.model.exception;
 
-import lombok.Getter;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
+import lombok.Value;
 
-
-public class PokemonNotFound extends Exception {
-
-    @Getter
-    private final String code = "POKEMON_NOT_FOUND";
+@Value
+@EqualsAndHashCode(callSuper = true)
+public class PokemonNotFound extends ResourceNotFound {
 
     public PokemonNotFound(@NonNull Integer id, @NonNull Throwable cause) {
 
-        super("Pokemon with id " + id + "Not Found", cause);
+        super("Pokemon with id " + id + " Not Found", "POKEMON_NOT_FOUND", cause);
     }
 
 }
