@@ -5,7 +5,15 @@ pokemon-range:
 
 poke-api:
   uri: https://pokeapi.co/api/v2/
+  #  uri: https://pokeapi.free.beeceptor.com
   timeout: 3000
+
+rest-client:
+  retry:
+    backoff-initial-interval: 500
+    backoff-max-interval: 500
+    backoff-multiplier: 1.0
+    max-attempts: 3
 
 
 

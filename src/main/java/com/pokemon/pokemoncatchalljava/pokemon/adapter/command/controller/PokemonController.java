@@ -18,10 +18,7 @@ public final class PokemonController {
 
     @GetMapping("/v1/pokemon")
     public ResponseEntity getRandomPokemon() {
-
         return responseBuilder.buildResponseFrom(getRandomPokemon::execute);
-
-
     }
 
 

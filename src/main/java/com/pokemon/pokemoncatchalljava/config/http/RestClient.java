@@ -1,37 +1,35 @@
 package com.pokemon.pokemoncatchalljava.config.http;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import io.vavr.Function0;
+import io.vavr.control.Try;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.DefaultUriBuilderFactory;
 
-import java.time.Duration;
+@AllArgsConstructor
+@Slf4j
+public final class RestClient {
 
-@Configuration
-public class RestClient {
+    private final RestTemplate restTemplate;
+    private final RetryTemplate retryTemplate;
 
-    @Primary
-    @Bean
-    public Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder(){
-        return new Jackson2ObjectMapperBuilder()
-                .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
-                .serializationInclusion(JsonInclude.Include.NON_NULL);
+    public <R> Try<R> get(final String url, Class<R> clazz) {
+        return executeCall(
+                () -> {
+                    log.info("get for url: " + url);
+                    return restTemplate.getForObject(url, clazz);
+                }
+        );
+
+    }
+
+    private <R> Try<R> executeCall(Function0<R> callBack) {
+
+        return Try.of(() -> retryTemplate.execute(
+                context -> callBack.apply()
+        ));
     }
 
 
-    @Bean("PokeApiRestTemplate")
-    public RestTemplate restTemplate(RestTemplateBuilder builder, @Value("${poke-api.timeout}") Long timeout, @Value("${poke-api.uri}") String uri) {
-
-        return builder
-                .setConnectTimeout(Duration.ofMillis(timeout))
-                .setReadTimeout(Duration.ofMillis(timeout))
-                .uriTemplateHandler(new DefaultUriBuilderFactory(uri))
-                .build();
-    }
 }
