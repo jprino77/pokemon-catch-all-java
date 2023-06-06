@@ -3,7 +3,7 @@ package com.pokemon.pokemoncatchalljava.pokemon.domain.model.exception;
 import lombok.Getter;
 import lombok.NonNull;
 
-public abstract sealed class ApplicationError extends Exception permits BusinessError, InternalError, ResourceNotFound, ValidationError {
+public abstract class ApplicationError extends Exception {
 
     @Getter
     protected final String code;
